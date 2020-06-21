@@ -1,10 +1,12 @@
 import sys
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox, QGridLayout, QFileDialog
+from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QLineEdit, QComboBox, QGridLayout, QFileDialog
 from PyQt5.Qt import QThread, QMutex
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from docx import Document
 import copy
 import xlrd
+import time
 
 
 class WordU(QtWidgets.QWidget):
@@ -30,7 +32,7 @@ class WordU(QtWidgets.QWidget):
     def activity(self):
         self.file_in.clicked.connect(self.choose_x_file)
         self.save_in.clicked.connect(self.choose_w_file)
-        self.yes_b.clicked.connect(self.Start_W)
+        self.yes_b.clicked.connect(self.start_W)
     
     def set_prom(self):
         self.file_path = QLineEdit(self)
@@ -50,6 +52,8 @@ class WordU(QtWidgets.QWidget):
         self.glayout.addWidget(self.style_in, 3, 4, 1, 2)
         self.yes_b = QPushButton("开始填写", self)
         self.glayout.addWidget(self.yes_b, 3, 8, 1, 4)
+        self.prompt = QLabel(self)
+        self.glayout.addWidget(self.prompt, 3, 1, 1, 2)
     
     def choose_x_file(self):
         filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
@@ -59,25 +63,38 @@ class WordU(QtWidgets.QWidget):
     
     def choose_w_file(self):
         filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
-                                                   "Word Files (*.doc);;Word Files (*.docx);;All Files (*)")
+                                                   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
         if filename:
             self.save_word.setText(filename[0])
     
-    def Start_W(self):
-        Write_Word = ThreadRW(self.file_path.text(), self.save_word.text())
-        Write_Word.start()
+    def start_W(self):
+        self.prompt.setText("执行中...")
+        in_item = self.style_in.currentIndex()
+        # if in_item == 1:
+        #     in_item = 2
+        self.write_word = ThreadRW(self.file_path.text(), self.save_word.text(), in_item)
+        self.write_word.str_out.connect(self.prompt_out)
+        self.write_word.start()
+        # time.sleep(1)
+    
+    @pyqtSlot(str)
+    def prompt_out(self, i):
+        self.prompt.setText(i)
 
 
 lock = QMutex()
 
 
 class ThreadRW(QThread):
-    def __init__(self, xfile=None, wfile=None, parent=None):
+    str_out = pyqtSignal(str)
+    
+    def __init__(self, xfile=None, wfile=None, item=None, parent=None):
         super().__init__(parent)
         self.R_file = xfile
         self.W_file = wfile
+        self.Item = item
     
-    def move_table_after(table, paragraph):
+    def move_table_after(self, table, paragraph):
         tbl, p = table._tbl, paragraph._p
         p.addnext(tbl)
     
@@ -97,14 +114,16 @@ class ThreadRW(QThread):
         doc = Document(self.W_file)
         tb = doc.tables
         num = 0
-        i = 2
+        i = 3
+        if self.Item == 1:
+            self.number = 2
         while True:
             a = tb[i].cell(0, 0).text
-            b = tb[i].cell(0, 5).text
+            b = tb[i].cell(0, 4 + self.Item).text
             if "用例名称" in a and "用例标识" in b:
                 copy_tb = copy.deepcopy(tb[i])
                 tb[i].cell(0, 1).text = temp[num][0]
-                run = tb[i].cell(0, 7).paragraphs[0].add_run(temp[num][1])
+                run = tb[i].cell(0, 5 + self.number).paragraphs[0].add_run(temp[num][1])
                 run.font.name = 'Times New Roman'
                 try:
                     num += 1
@@ -119,6 +138,9 @@ class ThreadRW(QThread):
                     break
             i += 1
         doc.save(self.W_file)
+        i = "执行完成"
+        self.str_out.emit(str(i))
+        lock.unlock()
 
 
 if __name__ == '__main__':
