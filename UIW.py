@@ -93,6 +93,11 @@ class ThreadRW(QThread):
         self.R_file = xfile
         self.W_file = wfile
         self.Item = item
+        self.number = 0
+        self.num = 0
+        self.t_number = 5
+        self.t_number_copy = 0
+        self.t_rows = 1
     
     def move_table_after(self, table, paragraph):
         tbl, p = table._tbl, paragraph._p
@@ -100,46 +105,79 @@ class ThreadRW(QThread):
     
     def run(self):
         lock.lock()
-        myWorkbook = xlrd.open_workbook(self.R_file)
-        mySheets = myWorkbook.sheets()
-        mySheet = mySheets[0]
-        rows = mySheet.nrows
-        cols = mySheet.ncols
-        temp = [[] * 2 for row in range(rows)]
-        for row in range(rows):
-            for col in range(cols):
-                row_data = mySheet.cell_value(row, col)
-                temp[row].append(row_data)
-        
-        doc = Document(self.W_file)
-        tb = doc.tables
-        num = 0
-        i = 3
+        # myWorkbook = xlrd.open_workbook(self.R_file)
+        # mySheets = myWorkbook.sheets()
+        # mySheet = mySheets[0]
+        # rows = mySheet.nrows
+        # cols = mySheet.ncols
+        # temp = [[] * 2 for row in range(rows)]
+        # for row in range(rows):
+        #     for col in range(cols):
+        #         row_data = mySheet.cell_value(row, col)
+        #         temp[row].append(row_data)
+        #
+
         if self.Item == 1:
             self.number = 2
+        example_name = []
+        identity = []
+        doc = Document(self.W_file)
+        tb = doc.tables
+
         while True:
-            a = tb[i].cell(0, 0).text
-            b = tb[i].cell(0, 4 + self.Item).text
+            a = tb[self.t_number].cell(0, 2).text
+            b = tb[self.t_number].cell(0, 4).text
+            if "用例标识" in a and "用例名称" in b:
+                self.t_number_copy = self.t_number
+                break
+            self.t_number += 1
+
+        while True:
+            if self.t_number_copy == 0:
+                break
+            try:
+                c = tb[self.t_number_copy].cell(self.t_rows, 2).text
+                d = tb[self.t_number_copy].cell(self.t_rows, 4).text
+            except BaseException as e:
+                print(e)
+                break
+            example_name.append(d)
+            identity.append(c)
+            self.t_rows += 1
+
+        while True:
+            a = tb[self.t_number].cell(0, 0).text
+            b = tb[self.t_number].cell(0, 4 + self.Item).text
             if "用例名称" in a and "用例标识" in b:
-                copy_tb = copy.deepcopy(tb[i])
-                tb[i].cell(0, 1).text = temp[num][0]
-                run = tb[i].cell(0, 5 + self.number).paragraphs[0].add_run(temp[num][1])
-                run.font.name = 'Times New Roman'
-                try:
-                    num += 1
-                    if temp[num]:
-                        pg = doc.paragraphs
-                        self.move_table_after(copy_tb, pg[len(pg) - 1])
-                        doc.add_paragraph(" ")
-                        doc.add_paragraph(" ")
-                        tb = doc.tables
-                except BaseException as e:
-                    print(e)
-                    break
-            i += 1
+                self.t_number_copy = self.t_number
+                break
+            self.t_number += 1
+
+        while True:
+            if self.t_number_copy == 0:
+                break
+            copy_tb = copy.deepcopy(tb[self.t_number_copy])
+            # tb[l].cell(0, 1).text = temp[num][0]
+            tb[self.t_number_copy].cell(0, 1).text = example_name[self.num]
+            # run = tb[l].cell(0, 5 + self.number).paragraphs[0].add_run(temp[num][1])
+            run = tb[self.t_number_copy].cell(0, 5 + self.number).paragraphs[0].add_run(identity[self.num])
+            run.font.name = 'Times New Roman'
+            self.t_number_copy += 1
+            try:
+                self.num += 1
+                if example_name[self.num]:
+                    pg = doc.paragraphs
+                    self.move_table_after(copy_tb, pg[len(pg) - 1])
+                    doc.add_paragraph(" ")
+                    doc.add_paragraph(" ")
+                    tb = doc.tables
+            except BaseException as e:
+                print(e)
+                break
+
         doc.save(self.W_file)
-        i = "执行完成"
-        self.str_out.emit(str(i))
+        re_str = "执行完成"
+        self.str_out.emit(str(re_str))
         lock.unlock()
 
 

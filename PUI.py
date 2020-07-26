@@ -10,7 +10,7 @@ import glob, os
 class PinYin(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(PinYin, self).__init__(parent)
-        self.setFixedSize(400, 300)
+        self.setFixedSize(400, 250)
         self.setWindowTitle("标识转换")
         self.file_path = None  # 要转化的文件路径
         self.save_path = None  # 转化后的文件保存路径
@@ -33,8 +33,8 @@ class PinYin(QtWidgets.QWidget):
         self.save_in.clicked.connect(self.choose_path)
         self.yes_b.clicked.connect(self.transfor)
         
-        self.imge_in.clicked.connect(self.choose_imge_path)
-        self.imge_b.clicked.connect(self.transfor_imge)
+        # self.imge_in.clicked.connect(self.choose_imge_path)
+        # self.imge_b.clicked.connect(self.transfor_imge)
     
     def set_prom(self):
         self.file_path = QLineEdit(self)
@@ -58,13 +58,13 @@ class PinYin(QtWidgets.QWidget):
         self.yes_b = QPushButton("开始转化", self)
         self.glayout.addWidget(self.yes_b, 3, 8, 1, 4)
         
-        self.imge_path = QLineEdit(self)
-        self.imge_in = QPushButton("选择图像文件夹", self)
-        self.imge_path.setReadOnly(True)
-        self.glayout.addWidget(self.imge_path, 4, 1, 1, 10)
-        self.glayout.addWidget(self.imge_in, 4, 11, 1, 4)
-        self.imge_b = QPushButton("统一大小", self)
-        self.glayout.addWidget(self.imge_b, 5, 11, 1, 4)
+        # self.imge_path = QLineEdit(self)
+        # self.imge_in = QPushButton("选择图像文件夹", self)
+        # self.imge_path.setReadOnly(True)
+        # self.glayout.addWidget(self.imge_path, 4, 1, 1, 10)
+        # self.glayout.addWidget(self.imge_in, 4, 11, 1, 4)
+        # self.imge_b = QPushButton("统一大小", self)
+        # self.glayout.addWidget(self.imge_b, 5, 11, 1, 4)
     
     def choose_file(self):
         filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
@@ -136,15 +136,15 @@ class PinYin(QtWidgets.QWidget):
             
             workbook.save(self.save_path.text())
     
-    def transfor_imge(self):
-        in_dir = self.imge_path.text()
-        out_dir = in_dir + '/out'
-        if not os.path.exists(out_dir): os.mkdir(out_dir)
-        for files in glob.glob(in_dir + '/*'):
-            filepath, filename = os.path.split(files)
-            im = Image.open(files)
-            im_ss = im.resize((6225, 3495))  # 修改后的文件长宽
-            im_ss.save(os.path.join(out_dir, filename))
+    # def transfor_imge(self):
+    #     in_dir = self.imge_path.text()
+    #     out_dir = in_dir + '/out'
+    #     if not os.path.exists(out_dir): os.mkdir(out_dir)
+    #     for files in glob.glob(in_dir + '/*'):
+    #         filepath, filename = os.path.split(files)
+    #         im = Image.open(files)
+    #         im_ss = im.resize((6225, 3495))  # 修改后的文件长宽
+    #         im_ss.save(os.path.join(out_dir, filename))
 
 
 if __name__ == '__main__':
