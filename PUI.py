@@ -53,7 +53,7 @@ class PinYin(QtWidgets.QWidget):
         self.style_in.addItems(["功能性 F", "性能 P", "安全性 IS", "兼容性 Sc", "易用性 Su", "可靠性 Sr", "可维护 Sm", "可移植 Sp"])
         self.glayout.addWidget(self.style_in, 3, 1, 1, 3)
         self.style2_in = QComboBox(self)
-        self.style2_in.addItems(["需求项", "测试项"])
+        self.style2_in.addItems(["测试项", "测试用例"])
         self.glayout.addWidget(self.style2_in, 3, 4, 1, 2)
         self.yes_b = QPushButton("开始转化", self)
         self.glayout.addWidget(self.yes_b, 3, 8, 1, 4)
