@@ -14,14 +14,10 @@ while True:
 		break
 	i += 1
 
-while True:
-	if l == 0:
-		break
-	try:
-		c = tb[l].cell(x, 2).text
-		d = tb[l].cell(x, 4).text
-	except BaseException as e:
-		print(e)
-		break
-	print(c, d)
-	x += 1
+if l is not 0:
+	for i, t in enumerate(tb[l].column_cells(2)):
+		# print(tb[l].columns)
+		# c = tb[l].cell(x, 2).text
+		print(i, t.text)
+		print(tb[l].column_cells(4)[i].text)
+	# d = tb[l].cell(x, 4).text
