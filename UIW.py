@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon
 from docx import Document
 import copy
+import resource
 
 
 class WordU(QtWidgets.QWidget):
@@ -13,14 +14,14 @@ class WordU(QtWidgets.QWidget):
 		super(WordU, self).__init__(parent)
 		self.setFixedSize(400, 150)
 		self.setWindowTitle("自动填写")
-		self.setWindowIcon(QIcon("i.ico"))
+		self.setWindowIcon(QIcon(":/i.ico"))
 		self.file_path = None
 		self.save_word = None
 		self.file_in = None
 		self.save_in = None
 		self.style_in = None
 		self.yes_b = None
-		self.write_word = None # 多线程
+		self.write_word = None  # 多线程
 
 		# 布局初始化
 		self.glayout = QGridLayout()
