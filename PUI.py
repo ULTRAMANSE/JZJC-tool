@@ -110,12 +110,9 @@ class PinYin(QtWidgets.QWidget):
 			style.font = font  # 设定样式
 
 			for i in range(len(temp)):
-				print(1)
 				if in_item == 0:
-					print(2)
 					worksheet.write(i, 0, temp[i], style)
 				else:
-					print(3)
 					if i < 9:
 						tstr = "00" + str(i + 1)
 					elif i < 99:
@@ -123,7 +120,6 @@ class PinYin(QtWidgets.QWidget):
 					else:
 						tstr = str(i + 1)
 					worksheet.write(i, 0, temp[i][0] + "-" + in_style + "-" + temp[i][1] + "-" + tstr, style)
-
 			workbook.save(self.save_path.text())
 
 
