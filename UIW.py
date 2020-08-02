@@ -51,12 +51,6 @@ class WordU(QtWidgets.QWidget):
 		self.prompt = QLabel(self)
 		self.glayout.addWidget(self.prompt, 2, 1, 1, 2)
 
-	# def choose_x_file(self):
-	# filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
-	#                                            "Text Files (*.xlsx);;Text Files (*.xls);;All Files (*)")
-	# if filename:
-	#     self.file_path.setText(filename[0])
-
 	def choose_w_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
 												   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
@@ -115,26 +109,11 @@ class ThreadRW(QThread):
 				break
 			self.t_number += 1
 
-		# 将用例名称和标识存入列表
-		# while True:
-		# 	if self.t_number_copy == 0:
-		# 		break
-		# 	try:
-		# 		c = tb[self.t_number_copy].cell(self.t_rows, 2).text
-		# 		d = tb[self.t_number_copy].cell(self.t_rows, 4).text
-		# 	except BaseException as e:
-		# 		print(e)
-		# 		break
-		# 	self.example_name.append(d)
-		# 	self.identity.append(c)
-		# 	self.t_rows += 1
-
 		for index, tb_row in enumerate(tb[self.t_number_copy].column_cells(2)):
 			if index is 0:
 				continue
 			self.example_name.append(tb[self.t_number_copy].column_cells(4)[index].text)
 			self.identity.append(tb_row.text)
-		# print(index, tb[self.t_number_copy].column_cells(4)[index].text)
 
 		while True:
 			a = tb[self.t_number].cell(0, 0).text
@@ -145,8 +124,6 @@ class ThreadRW(QThread):
 			self.t_number += 1
 
 		while len(self.example_name) - 1 >= self.num:
-
-			# print(self.num, len(self.example_name)-1)
 			if self.t_number_copy == 0:
 				break
 			copy_tb = copy.deepcopy(tb[self.t_number_copy])
