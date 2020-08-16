@@ -11,7 +11,7 @@ class PinYin(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super(PinYin, self).__init__(parent)
 		self.setFixedSize(400, 250)
-		self.setWindowTitle("标识转换")
+		self.setWindowTitle("标识转换2.1")
 		self.setWindowIcon(QIcon(":/favicon.ico"))
 		self.file_path = None  # 要转化的文件路径
 		self.save_path = None  # 转化后的文件保存路径
@@ -58,7 +58,7 @@ class PinYin(QtWidgets.QWidget):
 
 	def choose_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
-												   "Text Files (*.xlsx);;Text Files (*.xls);;All Files (*)")
+												   "Text Files(*.xlsx);;Text Files(*.xls);;All Files (*)")
 		self.file_path.setText(filename[0])
 
 	def choose_path(self):

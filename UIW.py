@@ -1,6 +1,6 @@
 import sys
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QLineEdit, QComboBox, QGridLayout, QFileDialog
+from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QComboBox, QGridLayout, QFileDialog
+, QMainWindow, QMenuBar)
 from PyQt5.Qt import QThread, QMutex
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon
@@ -9,12 +9,14 @@ import copy
 import resource
 
 
-class WordU(QtWidgets.QWidget):
+class WordU(QMainWindow):
 	def __init__(self, parent=None):
 		super(WordU, self).__init__(parent)
-		self.setFixedSize(400, 150)
-		self.setWindowTitle("自动填写")
+		self.setFixedSize(400, 180)
+		self.setWindowTitle("自动填写2.2")
 		self.setWindowIcon(QIcon(":/i.ico"))
+		self.widget = QWidget()
+		self.second_widget = QWidget()
 		self.file_path = None
 		self.save_word = None
 		self.file_in = None
@@ -25,16 +27,26 @@ class WordU(QtWidgets.QWidget):
 
 		# 布局初始化
 		self.glayout = QGridLayout()
+		self.s_glayout = QGridLayout()
 		self.glayout.setSpacing(10)
-		self.setLayout(self.glayout)
+		self.widget.setLayout(self.glayout)
+		self.setCentralWidget(self.widget)
+		self.second_widget.setLayout(self.s_glayout)
 
 		# 函数初始化
 		self.set_prom()
+		self.set_menu()
+		self.set_second()
 		self.activity()
+
+	def set_menu(self):
+		self.menu_bar = QMenuBar(self)
+		self.change = self.menu_bar.addAction("报告填写")
 
 	def activity(self):
 		self.save_in.clicked.connect(self.choose_w_file)
 		self.yes_b.clicked.connect(self.start_W)
+		self.change.triggered.connect(self.show_second)
 
 	def set_prom(self):
 		self.save_word = QLineEdit(self)
@@ -50,6 +62,24 @@ class WordU(QtWidgets.QWidget):
 		self.glayout.addWidget(self.yes_b, 2, 8, 1, 4)
 		self.prompt = QLabel(self)
 		self.glayout.addWidget(self.prompt, 2, 1, 1, 2)
+
+	def set_second(self):
+		self.read_excel = QLineEdit(self)
+		self.read_bu = QPushButton("选择Excel", self)
+		self.s_glayout.addWidget(self.read_excel, 1, 1, 1, 10)
+		self.s_glayout.addWidget(self.read_bu, 1, 11, 1, 4)
+
+		self.read_word = QLineEdit(self)
+		self.read_in = QPushButton("选择记录", self)
+		self.s_glayout.addWidget(self.read_word, 2, 1, 1, 10)
+		self.s_glayout.addWidget(self.read_in, 2, 11, 1, 4)
+
+		self.begin_bn = QPushButton("开始生成", self)
+		self.s_glayout.addWidget(self.begin_bn, 4, 6, 1, 4)
+
+	def show_second(self):
+		self.setCentralWidget(self.second_widget)
+
 
 	def choose_w_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
