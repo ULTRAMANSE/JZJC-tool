@@ -2,10 +2,11 @@ import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QComboBox, QGridLayout, QFileDialog
 , QMainWindow, QMenuBar)
 from PyQt5.Qt import QThread, QMutex
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QFile
 from PyQt5.QtGui import QIcon
 from docx import Document
 import copy
+import auto_report
 import resource
 
 
@@ -14,7 +15,7 @@ class WordU(QMainWindow):
 		super(WordU, self).__init__(parent)
 		self.setFixedSize(400, 180)
 		self.setWindowTitle("自动填写2.2")
-		self.setWindowIcon(QIcon(":/i.ico"))
+		self.setWindowIcon(QIcon(":/pic/i.ico"))
 		self.widget = QWidget()
 		self.second_widget = QWidget()
 		self.file_path = None
@@ -41,12 +42,17 @@ class WordU(QMainWindow):
 
 	def set_menu(self):
 		self.menu_bar = QMenuBar(self)
+		self.menu_bar.setObjectName("menu_bar")
 		self.change = self.menu_bar.addAction("报告填写")
+		self.menu_bar.addSeparator()
 
 	def activity(self):
 		self.save_in.clicked.connect(self.choose_w_file)
 		self.yes_b.clicked.connect(self.start_W)
 		self.change.triggered.connect(self.show_second)
+		self.read_bu.clicked.connect(self.choose_e_file)
+		self.read_in.clicked.connect(self.choose_r_file)
+		self.begin_bn.clicked.connect(self.start_in)
 
 	def set_prom(self):
 		self.save_word = QLineEdit(self)
@@ -80,12 +86,26 @@ class WordU(QMainWindow):
 	def show_second(self):
 		self.setCentralWidget(self.second_widget)
 
-
 	def choose_w_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
 												   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
 		if filename:
 			self.save_word.setText(filename[0])
+
+	def choose_e_file(self):
+		filename, i = QFileDialog.getOpenFileNames(None, "请选择Excel模板", "./",
+												   "Xlsx Files (*.xlsx);;Xls Files (*.xls);;All Files (*)")
+		if filename:
+			self.read_excel.setText(filename[0])
+
+	def choose_r_file(self):
+		filename, i = QFileDialog.getOpenFileNames(None, "请选择记录文件", "./",
+												   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
+		if filename:
+			self.read_word.setText(filename[0])
+
+	def start_in(self):
+		auto_report.auto(self.read_excel.text(), self.read_word.text())
 
 	def start_W(self):
 		if self.save_word.text() is "":
@@ -179,8 +199,24 @@ class ThreadRW(QThread):
 		lock.unlock()
 
 
+# class CommonHelper:
+# 	def __init__(self):
+# 		pass
+#
+# 	@staticmethod
+# 	def read_qss(stylefile):
+# 		with open(stylefile, 'r') as f:
+# 			return f.read()
+
+
 if __name__ == '__main__':
 	App = QApplication(sys.argv)
+	qss_file = QFile(":/qss/auto-type.qss")
+	qss_file.open(QFile.ReadOnly)
+	qss = str(qss_file.readAll(), encoding='utf-8')
+	qss_file.close()
+	# style = CommonHelper.read_qss()
 	ex = WordU()
+	ex.setStyleSheet(qss)
 	ex.show()
 	sys.exit(App.exec_())

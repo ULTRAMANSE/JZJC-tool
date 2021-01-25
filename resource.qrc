@@ -1,6 +1,9 @@
 <RCC>
-    <qresource prefix="/">
-        <file>i.ico</file>
-        <file>favicon.ico</file>
+    <qresource prefix="pic">
+        <file>./i.ico</file>
+        <file>./favicon.ico</file>
+    </qresource>
+    <qresource prefix="qss">
+        <file>./auto-type.qss</file>
     </qresource>
 </RCC>
