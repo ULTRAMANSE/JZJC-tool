@@ -181,7 +181,8 @@ class WordU(QMainWindow):
 			self.write_word.start()
 
 	def start_write_sign(self):
-		auto_w.read(self.docx_in.text())
+		self.re_l = auto_w.read(self.docx_in.text())
+		self.display.setText(self.re_l)
 
 	@pyqtSlot(str)
 	def prompt_out(self, i):
