@@ -1,10 +1,11 @@
+# coding = utf-8
 from docx import Document
 from pypinyin import Style, lazy_pinyin
 
 
-def read(a):
-	print(a)
-	doc = Document(a)
+def read(docx_in):
+	# print(docx_in)
+	doc = Document(docx_in)
 	tb = doc.tables
 	example_name = []
 	test_item = []
@@ -41,9 +42,11 @@ def read(a):
 			for index, tb_row in enumerate(tb[t_number].column_cells(4)):
 				if index is 0:
 					continue
-				tb[t_number].column_cells(2)[index].text = temp_out[index-1]
+				tb[t_number].column_cells(2)[index].text = temp_out[index - 1]
 		t_number += 1
-	doc.save(a)
+	doc.save(docx_in)
+	return "执行完成"
+
 
 if __name__ == '__main__':
 	# read("./test1.docx")

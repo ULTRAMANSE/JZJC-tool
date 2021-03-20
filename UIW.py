@@ -7,6 +7,7 @@ from PyQt5.QtGui import QIcon
 from docx import Document
 import copy
 import auto_report
+import auto_w
 import resource
 
 
@@ -18,6 +19,7 @@ class WordU(QMainWindow):
 		self.setWindowIcon(QIcon(":/pic/i.ico"))
 		self.widget = QWidget()  # 第一页面
 		self.second_widget = QWidget()  # 第二页面
+		self.third_widget = QWidget()  # 第三页面
 		self.file_path = None
 		self.save_word = None
 		self.file_in = None
@@ -33,17 +35,22 @@ class WordU(QMainWindow):
 		# 布局初始化
 		self.glayout = QGridLayout()
 		self.s_glayout = QGridLayout()
+		self.th_glayout = QGridLayout()
 		self.glayout.setSpacing(10)
+
 		self.widget.setLayout(self.glayout)
 		self.second_widget.setLayout(self.s_glayout)
+		self.third_widget.setLayout(self.th_glayout)
 
 		self.stackedWidget.addWidget(self.widget)
 		self.stackedWidget.addWidget(self.second_widget)
+		self.stackedWidget.addWidget(self.third_widget)
 
 		# 函数初始化
 		self.set_prom()
 		self.set_menu()
 		self.set_second()
+		self.set_third()
 		self.activity()
 
 	def set_menu(self):
@@ -51,6 +58,7 @@ class WordU(QMainWindow):
 		self.menu_bar.setObjectName("menu_bar")
 		self.change_recode = self.menu_bar.addAction("说明记录填写")
 		self.change = self.menu_bar.addAction("报告填写")
+		self.change_flog = self.menu_bar.addAction("标识填写")
 		self.menu_bar.addSeparator()
 
 	def activity(self):
@@ -62,11 +70,19 @@ class WordU(QMainWindow):
 		self.yes_b.clicked.connect(self.start_W)
 		self.change_recode.triggered.connect(self.show_fist)
 		self.change.triggered.connect(self.show_second)
+		self.change_flog.triggered.connect(self.show_third)
 		self.read_bu.clicked.connect(self.choose_e_file)
 		self.read_in.clicked.connect(self.choose_r_file)
 		self.begin_bn.clicked.connect(self.start_in)
 
+		self.word_path.clicked.connect(self.choose_path_file)  # 选择文件
+		self.start_sign_in.clicked.connect(self.start_write_sign)  # 开始填写
+
 	def set_prom(self):
+		"""
+		第一页面布局
+		:return:
+		"""
 		self.save_word = QLineEdit(self)
 		self.save_in = QPushButton("选择Word", self)
 		self.save_word.setReadOnly(True)
@@ -82,6 +98,10 @@ class WordU(QMainWindow):
 		self.glayout.addWidget(self.prompt, 2, 1, 1, 2)
 
 	def set_second(self):
+		"""
+		第二页面布局
+		:return:
+		"""
 		self.read_excel = QLineEdit(self)
 		self.read_bu = QPushButton("选择Excel", self)
 		self.s_glayout.addWidget(self.read_excel, 1, 1, 1, 10)
@@ -95,11 +115,25 @@ class WordU(QMainWindow):
 		self.begin_bn = QPushButton("开始生成", self)
 		self.s_glayout.addWidget(self.begin_bn, 4, 6, 1, 4)
 
+	def set_third(self):
+		self.docx_in = QLineEdit(self)
+		self.word_path = QPushButton("选择Word", self)
+		self.docx_in.setReadOnly(True)
+		self.th_glayout.addWidget(self.docx_in, 1, 1, 1, 10)
+		self.th_glayout.addWidget(self.word_path, 1, 11, 1, 4)
+		self.start_sign_in = QPushButton("开始填写", self)
+		self.th_glayout.addWidget(self.start_sign_in, 2, 6, 1, 4)
+		self.display = QLabel(self)
+		self.th_glayout.addWidget(self.display, 2, 1, 1, 2)
+
 	def show_fist(self):
 		self.stackedWidget.setCurrentIndex(0)
 
 	def show_second(self):
 		self.stackedWidget.setCurrentIndex(1)
+
+	def show_third(self):
+		self.stackedWidget.setCurrentIndex(2)
 
 	def choose_w_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
@@ -119,10 +153,24 @@ class WordU(QMainWindow):
 		if filename:
 			self.read_word.setText(filename[0])
 
+	def choose_path_file(self):
+		filename, i = QFileDialog.getOpenFileNames(None, "请选择记录或者说明", "./",
+												   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
+		if filename:
+			self.docx_in.setText(filename[0])
+
 	def start_in(self):
+		"""
+		执行报告填写
+		:return:
+		"""
 		auto_report.auto(self.read_excel.text(), self.read_word.text())
 
 	def start_W(self):
+		"""
+		自动生成说明记录的表格
+		:return:
+		"""
 		if self.save_word.text() is "":
 			self.prompt.setText("请选择文件！！！")
 		else:
@@ -131,6 +179,9 @@ class WordU(QMainWindow):
 			self.write_word = ThreadRW(self.save_word.text(), in_item)
 			self.write_word.str_out.connect(self.prompt_out)
 			self.write_word.start()
+
+	def start_write_sign(self):
+		auto_w.read(self.docx_in.text())
 
 	@pyqtSlot(str)
 	def prompt_out(self, i):
