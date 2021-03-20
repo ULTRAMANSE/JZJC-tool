@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel, QLineEdit, QComboBox, QGridLayout, QFileDialog
-, QMainWindow, QMenuBar)
+, QMainWindow, QStackedWidget)
 from PyQt5.Qt import QThread, QMutex
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QFile
 from PyQt5.QtGui import QIcon
@@ -14,10 +14,10 @@ class WordU(QMainWindow):
 	def __init__(self, parent=None):
 		super(WordU, self).__init__(parent)
 		self.setFixedSize(400, 180)
-		self.setWindowTitle("自动填写2.2")
+		self.setWindowTitle("自动填写2.4")
 		self.setWindowIcon(QIcon(":/pic/i.ico"))
-		self.widget = QWidget()
-		self.second_widget = QWidget()
+		self.widget = QWidget()  # 第一页面
+		self.second_widget = QWidget()  # 第二页面
 		self.file_path = None
 		self.save_word = None
 		self.file_in = None
@@ -26,13 +26,19 @@ class WordU(QMainWindow):
 		self.yes_b = None
 		self.write_word = None  # 多线程
 
+		# 设置stackedWidget
+		self.stackedWidget = QStackedWidget()
+		self.setCentralWidget(self.stackedWidget)
+
 		# 布局初始化
 		self.glayout = QGridLayout()
 		self.s_glayout = QGridLayout()
 		self.glayout.setSpacing(10)
 		self.widget.setLayout(self.glayout)
-		self.setCentralWidget(self.widget)
 		self.second_widget.setLayout(self.s_glayout)
+
+		self.stackedWidget.addWidget(self.widget)
+		self.stackedWidget.addWidget(self.second_widget)
 
 		# 函数初始化
 		self.set_prom()
@@ -41,14 +47,20 @@ class WordU(QMainWindow):
 		self.activity()
 
 	def set_menu(self):
-		self.menu_bar = QMenuBar(self)
+		self.menu_bar = self.menuBar()
 		self.menu_bar.setObjectName("menu_bar")
+		self.change_recode = self.menu_bar.addAction("说明记录填写")
 		self.change = self.menu_bar.addAction("报告填写")
 		self.menu_bar.addSeparator()
 
 	def activity(self):
+		"""
+		连接函数
+		:return:
+		"""
 		self.save_in.clicked.connect(self.choose_w_file)
 		self.yes_b.clicked.connect(self.start_W)
+		self.change_recode.triggered.connect(self.show_fist)
 		self.change.triggered.connect(self.show_second)
 		self.read_bu.clicked.connect(self.choose_e_file)
 		self.read_in.clicked.connect(self.choose_r_file)
@@ -83,8 +95,11 @@ class WordU(QMainWindow):
 		self.begin_bn = QPushButton("开始生成", self)
 		self.s_glayout.addWidget(self.begin_bn, 4, 6, 1, 4)
 
+	def show_fist(self):
+		self.stackedWidget.setCurrentIndex(0)
+
 	def show_second(self):
-		self.setCentralWidget(self.second_widget)
+		self.stackedWidget.setCurrentIndex(1)
 
 	def choose_w_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
@@ -215,7 +230,7 @@ if __name__ == '__main__':
 	qss_file.open(QFile.ReadOnly)
 	qss = str(qss_file.readAll(), encoding='utf-8')
 	qss_file.close()
-	# style = CommonHelper.read_qss()
+	# style = CommonHelper.read_qss("./auto-type.qss")
 	ex = WordU()
 	ex.setStyleSheet(qss)
 	ex.show()

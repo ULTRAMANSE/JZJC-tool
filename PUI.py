@@ -3,7 +3,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox, QGridLayout, QFileDialog
 from PyQt5.QtGui import QIcon
 from pypinyin import Style, lazy_pinyin
-import xlwt, xlrd
+from docx import Document
+# import xlwt, xlrd
 import resource
 
 
@@ -82,6 +83,8 @@ class PinYin(QtWidgets.QWidget):
 		else:
 			in_style = self.style_in.currentText().split(" ")[1]  # 获取转换类型
 			in_item = self.style2_in.currentIndex()
+			""" 
+			使用excel形式进行转换
 			self.myWorkbook = xlrd.open_workbook(self.file_path.text())
 			self.mySheets = self.myWorkbook.sheets()
 			self.mySheet = self.mySheets[0]
@@ -121,7 +124,26 @@ class PinYin(QtWidgets.QWidget):
 						tstr = str(i + 1)
 					worksheet.write(i, 0, temp[i][0] + "-" + in_style + "-" + temp[i][1] + "-" + tstr, style)
 			workbook.save(self.save_path.text())
-
+"""
+			doc = Document(a)
+			tb = doc.tables
+			example_name = []
+			test_item = []
+			t_number = 5
+			c = None
+			while t_number < 8:
+				temp_a = tb[t_number].cell(0, 2).text
+				temp_b = tb[t_number].cell(0, 4).text
+				if "用例标识" in temp_a and "用例名称" in temp_b:
+					for index, tb_row in enumerate(tb[t_number].column_cells(4)):
+						if index is 0:
+							continue
+						example_name.append("".join(lazy_pinyin(tb_row.text, style=Style.FIRST_LETTER)).upper())
+						test_item.append(
+							"".join(lazy_pinyin(tb[t_number].column_cells(0)[index].text,
+												style=Style.FIRST_LETTER)).upper())
+						c = list(map(list, zip(test_item, example_name)))
+				t_number += 1
 
 if __name__ == '__main__':
 	App = QApplication(sys.argv)

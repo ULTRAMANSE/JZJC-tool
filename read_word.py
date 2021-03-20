@@ -1,4 +1,6 @@
 from docx import Document
+import re
+
 
 def word(a):
 	doc = Document(a)
@@ -7,7 +9,7 @@ def word(a):
 	description = []
 	test_item = []
 	results = []
-	t_number = 5
+	t_number = 5  # 表格编号
 	while t_number < 18:
 		temp_a = tb[t_number].cell(0, 2).text
 		temp_b = tb[t_number].cell(0, 4).text
@@ -26,3 +28,25 @@ def word(a):
 			test_item.clear()
 			results.clear()
 		t_number += 1
+
+
+def read_head(docx):
+	doc = Document(docx)
+	temp = []
+	for p in doc.paragraphs:
+		# print(p.text)
+		if p.style.name == 'Heading 2':
+			# print(p.text)
+			type_test = re.findall("3.\d(.+?)用例清单", p.text)
+			if type_test:
+				temp.append(type_test[0])
+	if temp:
+		return temp
+	else:
+		return False
+
+
+if __name__ == '__main__':
+	read_head("H:\\WK存\\test\\JZJC.docx")
+	# c=word("H:\\WK存\\test\\JZJC.docx")
+	# print(next(c))

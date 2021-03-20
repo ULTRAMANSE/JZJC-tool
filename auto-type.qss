@@ -1,49 +1,59 @@
-QMainWindows{
-    color:#232C51;
-    background:#F5F5F5;
-    border:1px solid #CDC0B0;
-    border-radius:2px;
-}
-#menu_bar{
-    background:#CDC9C9;
-}
+/*QMainWindows {*/
+/*    color: #232C51;*/
+/*    background: #F5F5F5;*/
+/*    border: 1px solid #CDC0B0;*/
+/*    border-radius: 2px;*/
+/*}*/
 
-QLineEdit{
-    border:1px solid #CDC0B0;
-    border-radius:2px;
+#menu_bar {
+    background: #CDC9C9;
 }
 
-QPushButton
-{
-    color:rgb(100,100,100,250);
-    background-color:#CDC9C9;
-    border-style:outset;
-    border-width:0.5px;
-    border-color:#CDC9C9;
-    border-radius:10px;
-    font:bold 16px;
-    min-width:20px;
-    min-height:20px;
-    padding:4px;
+QLineEdit {
+    border: 1px solid #CDC0B0;
+    border-radius: 2px;
 }
 
-QPushButton:pressed
-{
-    background-color:#CDC5BF;
-    border-style:inset;
-
+QPushButton {
+    color: rgb(100, 100, 100, 250);
+    background-color: #CDC9C9;
+    border-style: outset;
+    border-width: 0.5px;
+    border-color: #CDC9C9;
+    border-radius: 10px;
+    font: bold 16px;
+    min-width: 20px;
+    min-height: 20px;
+    padding: 4px;
 }
 
-QComboBox{
-    color:rgb(100,100,100,250);
-    background-color:#CDC9C9;
-    border-style:outset;
-    border-width:0.5px;
-    border-color:#CDC9C9;
-    border-radius:10px;
-    font:bold 16px;
-    min-width:20px;
-    min-height:20px;
-    padding:4px;
+QPushButton:pressed {
+    background-color: #CDC5BF;
+    border-style: inset;
 }
 
+QComboBox {
+    combobox-popup: 0;
+    border-style: none;
+    font: bold 16px;
+    border-radius: 10px;
+    min-width: 20px;
+    min-height: 28px;
+    /*font-size: 16px;*/
+    /*font-family: PingFangSC-Regular, PingFang SC;*/
+    background-color: #CDC9C9;
+    color: rgb(100, 100, 100, 250);
+}
+
+QComboBox:drop-down {
+    border-style: none;
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #CDC9C9;
+}
