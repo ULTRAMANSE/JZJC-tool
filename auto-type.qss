@@ -1,10 +1,3 @@
-/*QMainWindows {*/
-/*    color: #232C51;*/
-/*    background: #F5F5F5;*/
-/*    border: 1px solid #CDC0B0;*/
-/*    border-radius: 2px;*/
-/*}*/
-
 #menu_bar {
     background: #CDC9C9;
 }
@@ -39,8 +32,6 @@ QComboBox {
     border-radius: 10px;
     min-width: 20px;
     min-height: 28px;
-    /*font-size: 16px;*/
-    /*font-family: PingFangSC-Regular, PingFang SC;*/
     background-color: #CDC9C9;
     color: rgb(100, 100, 100, 250);
 }

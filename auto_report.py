@@ -1,11 +1,11 @@
+# coding=utf-8
 from docxtpl import DocxTemplate
 import xlrd
-# import logging
 from read_word import word, read_head
 
 
-def auto(a, b):
-	workbook = xlrd.open_workbook(a)
+def auto(template_xlsx, record_docx):
+	workbook = xlrd.open_workbook(template_xlsx)
 	sheet = workbook.sheet_by_index(0)
 	text = sheet.col_values(1)
 
@@ -13,12 +13,12 @@ def auto(a, b):
 
 	# features, performance, safety, compatible = [], [], [], []
 	# easy, safeguard, reliable, transplant = [], [], [], []
-	w = word(b)
-	temp = read_head(b)
+	w = word(record_docx)
+	temp = read_head(record_docx)
 	c = {}
 	for i in temp:
 		c[i] = next(w)
-		# print(c)
+	# print(c)
 	context = {
 		"number": text[0], "con_number": text[1], "sample_number": text[2], "rev_staff": text[3],
 		"soft_name": text[4], "version": text[5], "requester": text[6], "deve_unit": text[7],
@@ -33,5 +33,4 @@ def auto(a, b):
 
 
 if __name__ == '__main__':
-	# auto("./template.xlsx", "C:\\Users\\ULTRAMA\\Desktop\\工具\\test.docx")
 	auto("./template.xlsx", "H:\\WK存\\test\\JZJC.docx")

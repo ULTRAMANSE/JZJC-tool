@@ -1,9 +1,10 @@
+
 from docx import Document
 import re
 
 
-def word(a):
-	doc = Document(a)
+def word(record_docx):
+	doc = Document(record_docx)
 	tb = doc.tables
 	example_name = []
 	description = []
@@ -30,13 +31,17 @@ def word(a):
 		t_number += 1
 
 
+
 def read_head(docx):
+	"""
+	返回清单类型
+	:param docx:
+	:return:
+	"""
 	doc = Document(docx)
 	temp = []
 	for p in doc.paragraphs:
-		# print(p.text)
 		if p.style.name == 'Heading 2':
-			# print(p.text)
 			type_test = re.findall("3.\d(.+?)用例清单", p.text)
 			if type_test:
 				temp.append(type_test[0])
@@ -48,5 +53,3 @@ def read_head(docx):
 
 if __name__ == '__main__':
 	read_head("H:\\WK存\\test\\JZJC.docx")
-	# c=word("H:\\WK存\\test\\JZJC.docx")
-	# print(next(c))

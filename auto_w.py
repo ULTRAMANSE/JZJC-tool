@@ -1,4 +1,4 @@
-# coding = utf-8
+# coding=utf-8
 from docx import Document
 from pypinyin import Style, lazy_pinyin
 
