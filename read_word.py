@@ -4,6 +4,11 @@ import re
 
 
 def word(record_docx):
+	"""
+	获取记录内容
+	:param record_docx:
+	:return:
+	"""
 	doc = Document(record_docx)
 	tb = doc.tables
 	example_name = []
@@ -52,4 +57,4 @@ def read_head(docx):
 
 
 if __name__ == '__main__':
-	read_head("H:\\WK存\\test\\JZJC.docx")
+	read_head("C:\\Users\\ULTRAMA\\Desktop\\工具\\test.docx")

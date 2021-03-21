@@ -18,7 +18,6 @@ def auto(template_xlsx, record_docx):
 	c = {}
 	for i in temp:
 		c[i] = next(w)
-	# print(c)
 	context = {
 		"number": text[0], "con_number": text[1], "sample_number": text[2], "rev_staff": text[3],
 		"soft_name": text[4], "version": text[5], "requester": text[6], "deve_unit": text[7],
@@ -33,4 +32,4 @@ def auto(template_xlsx, record_docx):
 
 
 if __name__ == '__main__':
-	auto("./template.xlsx", "H:\\WK存\\test\\JZJC.docx")
+	auto("C:\\Users\\ULTRAMA\\Desktop\\工具\\template.xlsx", "C:\\Users\\ULTRAMA\\Desktop\\工具\\test.docx")
