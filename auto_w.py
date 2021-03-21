@@ -25,13 +25,9 @@ def read(docx_in):
 		t_number += 1
 
 	temp_out = []
+	# 生成编号
 	for i in range(len(c)):
-		if i < 9:
-			tstr = "00" + str(i + 1)
-		elif i < 99:
-			tstr = "0" + str(i + 1)
-		else:
-			tstr = str(i + 1)
+		tstr = str(i+1).zfill(3)
 		temp_out.append(c[i][0] + "-" + "F" + "-" + c[i][1] + "-" + tstr)
 
 	t_number = 5
