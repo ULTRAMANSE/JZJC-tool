@@ -96,7 +96,7 @@ class WordU(QMainWindow):
 		self.yes_b = QPushButton("开始填写", self)
 		self.glayout.addWidget(self.yes_b, 2, 8, 1, 4)
 		self.prompt = QLabel(self)
-		self.glayout.addWidget(self.prompt, 2, 1, 1, 2)
+		self.glayout.addWidget(self.prompt, 2, 1, 1, 3)
 
 	def set_second(self):
 		"""
@@ -125,7 +125,7 @@ class WordU(QMainWindow):
 		self.start_sign_in = QPushButton("开始填写", self)
 		self.th_glayout.addWidget(self.start_sign_in, 2, 6, 1, 4)
 		self.display = QLabel(self)
-		self.th_glayout.addWidget(self.display, 2, 1, 1, 2)
+		self.th_glayout.addWidget(self.display, 2, 1, 1, 3)
 
 	def show_fist(self):
 		self.stackedWidget.setCurrentIndex(0)
@@ -173,7 +173,7 @@ class WordU(QMainWindow):
 		:return:
 		"""
 		if self.save_word.text() is "":
-			self.prompt.setText("请选择文件！！！")
+			self.prompt.setText("请选择文件！")
 		else:
 			self.prompt.setText("执行中...")
 			in_item = self.style_in.currentIndex()
@@ -182,12 +182,20 @@ class WordU(QMainWindow):
 			self.write_word.start()
 
 	def start_write_sign(self):
-		self.re_l = auto_w.read(self.docx_in.text())
-		self.display.setText(self.re_l)
+		if self.docx_in.text() is "":
+			self.display.setText("请选择文件！")
+		else:
+			self.write_sign = auto_w.Read(self.docx_in.text())
+			self.write_sign.str_out.connect(self.display_out)
+			self.write_sign.start()
 
 	@pyqtSlot(str)
 	def prompt_out(self, i):
 		self.prompt.setText(i)
+
+	@pyqtSlot(str)
+	def display_out(self, i):
+		self.display.setText(i)
 
 
 lock = QMutex()
