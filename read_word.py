@@ -1,4 +1,4 @@
-
+# coding=utf-8
 from docx import Document
 import re
 
@@ -36,7 +36,6 @@ def word(record_docx):
 		t_number += 1
 
 
-
 def read_head(docx):
 	"""
 	返回清单类型
@@ -46,10 +45,12 @@ def read_head(docx):
 	doc = Document(docx)
 	temp = []
 	for p in doc.paragraphs:
+		# 获取清单类型
 		if p.style.name == 'Heading 2':
-			type_test = re.findall("3.\d(.+?)用例清单", p.text)
+			type_test = re.findall(".\d(.+?)用例清单", p.text)
 			if type_test:
 				temp.append(type_test[0])
+
 	if temp:
 		return temp
 	else:
