@@ -9,6 +9,7 @@ from docx import Document
 import copy
 import auto_report
 import auto_w
+import auto_template
 import resource
 
 
@@ -21,6 +22,7 @@ class WordU(QMainWindow):
 		self.widget = QWidget()  # 第一页面
 		self.second_widget = QWidget()  # 第二页面
 		self.third_widget = QWidget()  # 第三页面
+		self.fourth_widget = QWidget()  # 第四页面
 		self.file_path = None
 		self.save_word = None
 		self.file_in = None
@@ -37,21 +39,25 @@ class WordU(QMainWindow):
 		self.glayout = QGridLayout()
 		self.s_glayout = QGridLayout()
 		self.th_glayout = QGridLayout()
+		self.four_glayout = QGridLayout()
 		self.glayout.setSpacing(10)
 
 		self.widget.setLayout(self.glayout)
 		self.second_widget.setLayout(self.s_glayout)
 		self.third_widget.setLayout(self.th_glayout)
+		self.fourth_widget.setLayout(self.four_glayout)
 
 		self.stackedWidget.addWidget(self.widget)
 		self.stackedWidget.addWidget(self.second_widget)
 		self.stackedWidget.addWidget(self.third_widget)
+		self.stackedWidget.addWidget(self.fourth_widget)
 
 		# 函数初始化
 		self.set_prom()
 		self.set_menu()
 		self.set_second()
 		self.set_third()
+		self.set_fourth()
 		self.activity()
 
 	def set_menu(self):
@@ -60,6 +66,7 @@ class WordU(QMainWindow):
 		self.change_recode = self.menu_bar.addAction("说明记录填写")
 		self.change = self.menu_bar.addAction("报告填写")
 		self.change_flog = self.menu_bar.addAction("标识填写")
+		self.change_four = self.menu_bar.addAction("模板生成")
 		self.menu_bar.addSeparator()
 
 	def activity(self):
@@ -69,15 +76,20 @@ class WordU(QMainWindow):
 		"""
 		self.save_in.clicked.connect(self.choose_w_file)
 		self.yes_b.clicked.connect(self.start_W)
+		# 菜单事件
 		self.change_recode.triggered.connect(self.show_fist)
 		self.change.triggered.connect(self.show_second)
 		self.change_flog.triggered.connect(self.show_third)
+		self.change_four.triggered.connect(self.show_fourth)
+
 		self.read_bu.clicked.connect(self.choose_e_file)
 		self.read_in.clicked.connect(self.choose_r_file)
 		self.begin_bn.clicked.connect(self.start_in)
+		self.set_path.clicked.connect(self.choose_save_path)
 
 		self.word_path.clicked.connect(self.choose_path_file)  # 选择文件
 		self.start_sign_in.clicked.connect(self.start_write_sign)  # 开始填写
+		self.one_click_build.clicked.connect(self.print_template)  # 生成模板
 
 	def set_prom(self):
 		"""
@@ -127,6 +139,18 @@ class WordU(QMainWindow):
 		self.display = QLabel(self)
 		self.th_glayout.addWidget(self.display, 2, 1, 1, 3)
 
+	def set_fourth(self):
+		self.save_path = QLineEdit(self)
+		self.set_path = QPushButton("选择路径", self)
+		self.docx_in.setReadOnly(True)
+		self.four_glayout.addWidget(self.save_path, 1, 1, 1, 10)
+		self.four_glayout.addWidget(self.set_path, 1, 11, 1, 4)
+		self.one_click_build = QPushButton("一键生成", self)
+		self.four_glayout.addWidget(self.one_click_build, 2, 6, 1, 4)
+
+	# self.display = QLabel(self)
+	# self.th_glayout.addWidget(self.display, 2, 1, 1, 3)
+
 	def show_fist(self):
 		self.stackedWidget.setCurrentIndex(0)
 
@@ -135,6 +159,9 @@ class WordU(QMainWindow):
 
 	def show_third(self):
 		self.stackedWidget.setCurrentIndex(2)
+
+	def show_fourth(self):
+		self.stackedWidget.setCurrentIndex(3)
 
 	def choose_w_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择要添加的文件", "./",
@@ -159,6 +186,11 @@ class WordU(QMainWindow):
 												   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
 		if filename:
 			self.docx_in.setText(filename[0])
+
+	def choose_save_path(self):
+		dir_path = QFileDialog.getExistingDirectory(None, "请选择记录文件", "./")
+		if dir_path:
+			self.save_path.setText(dir_path)
 
 	def start_in(self):
 		"""
@@ -188,6 +220,9 @@ class WordU(QMainWindow):
 			self.write_sign = auto_w.Read(self.docx_in.text())
 			self.write_sign.str_out.connect(self.display_out)
 			self.write_sign.start()
+
+	def print_template(self):
+		auto_template.auto(self.save_path.text())
 
 	@pyqtSlot(str)
 	def prompt_out(self, i):
