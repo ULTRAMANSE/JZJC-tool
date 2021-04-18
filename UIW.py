@@ -17,7 +17,7 @@ class WordU(QMainWindow):
 	def __init__(self, parent=None):
 		super(WordU, self).__init__(parent)
 		self.setFixedSize(400, 180)
-		self.setWindowTitle("自动填写2.4")
+		self.setWindowTitle("自动填写2.7")
 		self.setWindowIcon(QIcon(":/pic/i.ico"))
 		self.widget = QWidget()  # 第一页面
 		self.second_widget = QWidget()  # 第二页面
@@ -63,10 +63,11 @@ class WordU(QMainWindow):
 	def set_menu(self):
 		self.menu_bar = self.menuBar()
 		self.menu_bar.setObjectName("menu_bar")
+		self.change_four = self.menu_bar.addAction("模板生成")
+		self.change_flog = self.menu_bar.addAction("标识填写")
 		self.change_recode = self.menu_bar.addAction("说明记录填写")
 		self.change = self.menu_bar.addAction("报告填写")
-		self.change_flog = self.menu_bar.addAction("标识填写")
-		self.change_four = self.menu_bar.addAction("模板生成")
+
 		self.menu_bar.addSeparator()
 
 	def activity(self):
@@ -82,7 +83,7 @@ class WordU(QMainWindow):
 		self.change_flog.triggered.connect(self.show_third)
 		self.change_four.triggered.connect(self.show_fourth)
 
-		self.read_bu.clicked.connect(self.choose_e_file)
+		# self.read_bu.clicked.connect(self.choose_e_file)
 		self.read_in.clicked.connect(self.choose_r_file)
 		self.begin_bn.clicked.connect(self.start_in)
 		self.set_path.clicked.connect(self.choose_save_path)
@@ -115,18 +116,21 @@ class WordU(QMainWindow):
 		第二页面布局
 		:return:
 		"""
-		self.read_excel = QLineEdit(self)
-		self.read_bu = QPushButton("选择Excel", self)
-		self.s_glayout.addWidget(self.read_excel, 1, 1, 1, 10)
-		self.s_glayout.addWidget(self.read_bu, 1, 11, 1, 4)
+		# self.read_excel = QLineEdit(self)
+		# self.read_bu = QPushButton("选择Excel", self)
+		# self.s_glayout.addWidget(self.read_excel, 1, 1, 1, 10)
+		# self.s_glayout.addWidget(self.read_bu, 1, 11, 1, 4)
 
 		self.read_word = QLineEdit(self)
 		self.read_in = QPushButton("选择记录", self)
-		self.s_glayout.addWidget(self.read_word, 2, 1, 1, 10)
-		self.s_glayout.addWidget(self.read_in, 2, 11, 1, 4)
+		self.s_glayout.addWidget(self.read_word, 1, 1, 1, 10)
+		self.s_glayout.addWidget(self.read_in, 1, 11, 1, 4)
+		# self.s_glayout.addWidget(self.read_word, 2, 1, 1, 10)
+		# self.s_glayout.addWidget(self.read_in, 2, 11, 1, 4)
 
 		self.begin_bn = QPushButton("开始生成", self)
-		self.s_glayout.addWidget(self.begin_bn, 4, 6, 1, 4)
+		self.s_glayout.addWidget(self.begin_bn, 2, 6, 1, 4)
+		# self.s_glayout.addWidget(self.begin_bn, 4, 6, 1, 4)
 
 	def set_third(self):
 		self.docx_in = QLineEdit(self)
@@ -169,11 +173,11 @@ class WordU(QMainWindow):
 		if filename:
 			self.save_word.setText(filename[0])
 
-	def choose_e_file(self):
-		filename, i = QFileDialog.getOpenFileNames(None, "请选择Excel模板", "./",
-												   "Xlsx Files (*.xlsx);;Xls Files (*.xls);;All Files (*)")
-		if filename:
-			self.read_excel.setText(filename[0])
+	# def choose_e_file(self):
+	# 	filename, i = QFileDialog.getOpenFileNames(None, "请选择Excel模板", "./",
+	# 											   "Xlsx Files (*.xlsx);;Xls Files (*.xls);;All Files (*)")
+	# 	if filename:
+	# 		self.read_excel.setText(filename[0])
 
 	def choose_r_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择记录文件", "./",
@@ -197,7 +201,8 @@ class WordU(QMainWindow):
 		执行报告填写
 		:return:
 		"""
-		auto_report.auto(self.read_excel.text(), self.read_word.text())
+		# auto_report.auto(self.read_excel.text(), self.read_word.text())
+		auto_report.auto(self.read_word.text())
 
 	def start_W(self):
 		"""

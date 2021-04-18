@@ -4,20 +4,17 @@ import xlrd
 from read_word import word, read_head
 
 
-def auto(template_xlsx, record_docx):
-	workbook = xlrd.open_workbook(template_xlsx)
+def auto(record_docx):
+	workbook = xlrd.open_workbook("./template.xlsx")
 	sheet = workbook.sheet_by_index(0)
 	text = sheet.col_values(1)
-
-	tpl = DocxTemplate("./template.docx")
-
-	# features, performance, safety, compatible = [], [], [], []
-	# easy, safeguard, reliable, transplant = [], [], [], []
+	tpl = DocxTemplate("./模板/JZJC-TR-000X-2021 软件测试报告.docx")
 	w = word(record_docx)
 	temp = read_head(record_docx)
 	c = {}
 	for i in temp:
 		c[i] = next(w)
+
 	context = {
 		"number": text[0], "con_number": text[1], "sample_number": text[2], "rev_staff": text[3],
 		"soft_name": text[4], "version": text[5], "requester": text[6], "deve_unit": text[7],
@@ -28,8 +25,8 @@ def auto(template_xlsx, record_docx):
 	}
 
 	tpl.render(context)
-	tpl.save(".\out.docx")
+	tpl.save(".\JZJC-TR-" + text[0] + " 软件测试报告.docx")
 
 
 if __name__ == '__main__':
-	auto("C:\\Users\\ULTRAMA\\Desktop\\工具\\template.xlsx", "C:\\Users\\ULTRAMA\\Desktop\\工具\\test.docx")
+	auto("C:\\Users\\ULTRAMA\\Desktop\\123.docx")

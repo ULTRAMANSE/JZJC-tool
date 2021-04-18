@@ -46,11 +46,10 @@ def read_head(docx):
 	temp = []
 	for p in doc.paragraphs:
 		# 获取清单类型
-		if p.style.name == 'Heading 2':
+		if p.style.name == 'Heading 2' or p.style.name == '样式2':
 			type_test = re.findall(".\d(.+?)用例清单", p.text)
 			if type_test:
 				temp.append(type_test[0])
-
 	if temp:
 		return temp
 	else:
@@ -58,4 +57,4 @@ def read_head(docx):
 
 
 if __name__ == '__main__':
-	read_head("C:\\Users\\ULTRAMA\\Desktop\\工具\\test.docx")
+	read_head("C:\\Users\\ULTRAMA\\Desktop\\123.docx")

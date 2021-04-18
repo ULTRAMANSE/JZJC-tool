@@ -3,7 +3,7 @@ import xlrd
 
 
 def auto(in_path):
-	workbook = xlrd.open_workbook(".\\template\\template.xlsx")
+	workbook = xlrd.open_workbook(".\\template.xlsx")
 	sheet = workbook.sheet_by_index(0)
 	text = sheet.col_values(1)
 
