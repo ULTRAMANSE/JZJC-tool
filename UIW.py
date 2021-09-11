@@ -17,7 +17,7 @@ class WordU(QMainWindow):
 	def __init__(self, parent=None):
 		super(WordU, self).__init__(parent)
 		self.setFixedSize(400, 180)
-		self.setWindowTitle("自动填写2.7")
+		self.setWindowTitle("自动填写3.1")
 		self.setWindowIcon(QIcon(":/pic/i.ico"))
 		self.widget = QWidget()  # 第一页面
 		self.second_widget = QWidget()  # 第二页面
@@ -116,23 +116,23 @@ class WordU(QMainWindow):
 		第二页面布局
 		:return:
 		"""
-		# self.read_excel = QLineEdit(self)
-		# self.read_bu = QPushButton("选择Excel", self)
-		# self.s_glayout.addWidget(self.read_excel, 1, 1, 1, 10)
-		# self.s_glayout.addWidget(self.read_bu, 1, 11, 1, 4)
-
 		self.read_word = QLineEdit(self)
 		self.read_in = QPushButton("选择记录", self)
 		self.s_glayout.addWidget(self.read_word, 1, 1, 1, 10)
 		self.s_glayout.addWidget(self.read_in, 1, 11, 1, 4)
-		# self.s_glayout.addWidget(self.read_word, 2, 1, 1, 10)
-		# self.s_glayout.addWidget(self.read_in, 2, 11, 1, 4)
 
 		self.begin_bn = QPushButton("开始生成", self)
 		self.s_glayout.addWidget(self.begin_bn, 2, 6, 1, 4)
-		# self.s_glayout.addWidget(self.begin_bn, 4, 6, 1, 4)
+
+		self.complete = QLabel(self)
+		self.s_glayout.addWidget(self.complete, 2, 1, 1, 3)
+
 
 	def set_third(self):
+		"""
+		标识生成页面
+		:return:
+		"""
 		self.docx_in = QLineEdit(self)
 		self.word_path = QPushButton("选择Word", self)
 		self.docx_in.setReadOnly(True)
@@ -173,12 +173,6 @@ class WordU(QMainWindow):
 		if filename:
 			self.save_word.setText(filename[0])
 
-	# def choose_e_file(self):
-	# 	filename, i = QFileDialog.getOpenFileNames(None, "请选择Excel模板", "./",
-	# 											   "Xlsx Files (*.xlsx);;Xls Files (*.xls);;All Files (*)")
-	# 	if filename:
-	# 		self.read_excel.setText(filename[0])
-
 	def choose_r_file(self):
 		filename, i = QFileDialog.getOpenFileNames(None, "请选择记录文件", "./",
 												   "Word Files (*.docx);;Word Files (*.doc);;All Files (*)")
@@ -201,8 +195,9 @@ class WordU(QMainWindow):
 		执行报告填写
 		:return:
 		"""
-		# auto_report.auto(self.read_excel.text(), self.read_word.text())
-		auto_report.auto(self.read_word.text())
+		result = auto_report.auto(self.read_word.text())
+		if result is True:
+			self.complete.setText("已完成")
 
 	def start_W(self):
 		"""
@@ -223,6 +218,7 @@ class WordU(QMainWindow):
 			self.display.setText("请选择文件！")
 		else:
 			self.write_sign = auto_w.Read(self.docx_in.text())
+			self.display.setText("执行中...")
 			self.write_sign.str_out.connect(self.display_out)
 			self.write_sign.start()
 
@@ -248,7 +244,7 @@ class ThreadRW(QThread):
 		super().__init__(parent)
 		self.W_file = wfile  # word文件名
 		self.Item = item  # 类型选项
-		self.number = 0  # 记录差
+		# self.number = 0  # 记录差
 		self.num = 0  # 列表下表值
 		self.t_number = 5  # 表格index
 		self.t_number_copy = 0  # 复制表格index
@@ -262,8 +258,8 @@ class ThreadRW(QThread):
 
 	def run(self):
 		lock.lock()
-		if self.Item == 1:
-			self.number = 2
+		# if self.Item == 1:
+		# 	self.number = 1
 		doc = Document(self.W_file)
 		tb = doc.tables
 
@@ -294,7 +290,7 @@ class ThreadRW(QThread):
 				break
 			copy_tb = copy.deepcopy(tb[self.t_number_copy])
 			tb[self.t_number_copy].cell(0, 1).text = self.example_name[self.num]
-			run = tb[self.t_number_copy].cell(0, 5 + self.number).paragraphs[0].add_run(self.identity[self.num])
+			run = tb[self.t_number_copy].cell(0, 5+self.Item).paragraphs[0].add_run(self.identity[self.num])
 			run.font.name = 'Times New Roman'
 			self.t_number_copy += 1
 			try:

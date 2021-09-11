@@ -50,6 +50,7 @@ def read_head(docx):
 			type_test = re.findall(".\d(.+?)用例清单", p.text)
 			if type_test:
 				temp.append(type_test[0])
+	print(temp)
 	if temp:
 		return temp
 	else:
@@ -57,4 +58,4 @@ def read_head(docx):
 
 
 if __name__ == '__main__':
-	read_head("C:\\Users\\ULTRAMA\\Desktop\\123.docx")
+	read_head("C:\\Users\\ULTRAMA\\Desktop\\JZJC-R-0064-2021 测试记录.docx")

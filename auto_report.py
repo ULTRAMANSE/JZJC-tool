@@ -14,7 +14,7 @@ def auto(record_docx):
 	c = {}
 	for i in temp:
 		c[i] = next(w)
-
+	# print(c)
 	context = {
 		"number": text[0], "con_number": text[1], "sample_number": text[2], "rev_staff": text[3],
 		"soft_name": text[4], "version": text[5], "requester": text[6], "deve_unit": text[7],
@@ -25,8 +25,8 @@ def auto(record_docx):
 	}
 
 	tpl.render(context)
-	tpl.save(".\JZJC-TR-" + text[0] + " 软件测试报告.docx")
-
+	tpl.save(record_docx.split("JZJC-")[0]+"JZJC-TR-" + text[0] + " 软件测试报告.docx")
+	return True
 
 if __name__ == '__main__':
-	auto("C:\\Users\\ULTRAMA\\Desktop\\123.docx")
+	auto("C:\\Users\\ULTRAMA\\Desktop\\JZJC-R-0064-2021 测试记录.docx")

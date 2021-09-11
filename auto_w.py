@@ -1,4 +1,5 @@
 # coding=utf-8
+# 标识转大写
 from docx import Document
 from pypinyin import Style, lazy_pinyin
 from PyQt5.Qt import QThread, QMutex
@@ -39,10 +40,10 @@ class Read(QThread):
 						if index is 0:
 							continue
 						self.temp_out.append(
-							"".join(lazy_pinyin(tb_row.text, style=Style.FIRST_LETTER)).upper() + "-" + self.test_style[
+							"".join(lazy_pinyin(tb[self.t_number].column_cells(0)[index].text,
+												style=Style.FIRST_LETTER)).upper() + "-" + self.test_style[
 								self.re_style[self.t_number - 5]] + "-" + "".join(
-								lazy_pinyin(tb[self.t_number].column_cells(0)[index].text,
-											style=Style.FIRST_LETTER)).upper() + "-" + str(index).zfill(3))
+								lazy_pinyin(tb_row.text, style=Style.FIRST_LETTER)).upper() + "-" + str(index).zfill(3))
 				self.t_number += 1
 
 			# 填写编号
